@@ -62,6 +62,16 @@ class SynoCoreExternalUSB(SynoBaseApi["dict[str, SynoCoreExternalUSBDevice]"]):
         """Returns a specific external USB storage device."""
         return self._data.get(device_id)
 
+    async def eject(self, device_id: str) -> bool | None:
+        """Eject a USB storage device."""
+        raw_data = await self._dsm.get(self.API_KEY, "eject", {"dev_id": device_id})
+        if (
+            isinstance(raw_data, dict)
+            and (result := raw_data.get("success")) is not None
+        ):
+            return bool(result)
+        return None
+
 
 class SynoCoreExternalUSBDevice:
     """A representation of an external USB device."""
